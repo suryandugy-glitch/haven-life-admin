@@ -10,6 +10,13 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <section class="welcome-screen" id="welcomeScreen" aria-label="Welcome to Haven">
+    <div class="welcome-art"><span class="brand-mark">h</span><i></i><i></i><i></i></div>
+    <div class="welcome-card"><p class="eyebrow">WELCOME TO HAVEN</p><h1>Make space for<br><em>what matters.</em></h1><p>Your personal life-admin companion, designed for a calmer day.</p>
+      <form id="welcomeForm"><label>Your first name<input id="welcomeName" required maxlength="24" placeholder="e.g. Suryandu" autocomplete="name" /></label><label>Choose your language<select id="welcomeLanguage"><option value="en">English</option><option value="hi">Hindi / Hindi</option><option value="bn">Bengali / Bangla</option></select></label><button class="add-btn" type="submit">Enter my Haven <span>→</span></button></form>
+      <small>Created by <b>Suryandu Ganguly</b></small>
+    </div>
+  </section>
   <div class="app-shell">
     <aside class="sidebar">
       <a class="brand" href="#"><span class="brand-mark">h</span><span>haven</span></a>
@@ -22,7 +29,7 @@
       </nav>
       <div class="sidebar-bottom">
         <button class="settings-btn" id="settingsBtn">⚙ Settings</button>
-        <div class="profile"><div class="avatar">S</div><div><strong>Surya</strong><small>Personal space</small></div><button>···</button></div>
+        <div class="profile"><div class="avatar" id="avatarLetter">S</div><div><strong id="profileName">Surya</strong><small>Personal space</small></div><button id="profileBtn">···</button></div>
       </div>
     </aside>
 
@@ -55,6 +62,14 @@
   </div>
   <div class="modal-backdrop" id="modalBackdrop"><div class="modal"><button class="close-modal">×</button><p class="eyebrow">ADD TO HAVEN</p><h2 id="modalTitle">New task</h2><form id="entryForm"><label>What needs attention?<input id="entryName" required placeholder="e.g. Book a dental check-up" /></label><label>When?<select id="entryDate"><option>Today</option><option>This week</option><option>Next week</option><option>No due date</option></select></label><button class="add-btn" type="submit">Save it</button></form></div></div>
   <div class="toast" id="toast">Saved to your Haven</div>
+  <button class="ai-fab" id="aiFab" aria-label="Open Haven AI"><span>✦</span> Ask Haven</button>
+  <aside class="ai-panel" id="aiPanel" aria-label="Haven AI assistant">
+    <div class="ai-head"><div><span>✦</span><strong>Haven AI</strong><small>Your calm planning companion</small></div><button id="closeAi">×</button></div>
+    <div class="ai-messages" id="aiMessages"><div class="ai-message">Hi! I can help you turn life admin into a small, clear next step. Ask about bills, tasks, documents, or planning your week.</div></div>
+    <div class="ai-suggestions"><button>What needs attention?</button><button>Plan my week</button><button>How can I save money?</button></div>
+    <form id="aiForm"><input id="aiInput" placeholder="Ask Haven anything..." autocomplete="off" /><button aria-label="Send">→</button></form>
+  </aside>
+  <div class="modal-backdrop settings-backdrop" id="settingsBackdrop"><div class="settings-modal"><button class="close-settings">×</button><div class="settings-title"><p class="eyebrow">MAKE HAVEN YOURS</p><h2>Settings</h2><p>Personalise the space that helps you run your life.</p></div><div class="setting-section"><h3>Your profile</h3><label>Display name<input id="settingName" maxlength="24" /></label></div><div class="setting-section"><h3>Appearance</h3><div class="theme-options"><button data-theme="evergreen"><i></i><span>Evergreen</span></button><button data-theme="ocean"><i></i><span>Ocean</span></button><button data-theme="sunset"><i></i><span>Sunset</span></button><button data-theme="night"><i></i><span>Night</span></button></div></div><div class="setting-section"><h3>Language</h3><select id="settingLanguage"><option value="en">English</option><option value="hi">Hindi / Hindi</option><option value="bn">Bengali / Bangla</option></select></div><div class="setting-section toggle-row"><div><h3>Gentle reminders</h3><p>Show a daily focus and helpful nudges.</p></div><input type="checkbox" id="remindersToggle" checked /></div><button class="add-btn" id="saveSettings">Save changes</button><p class="creator-credit">Created with care by <b>Suryandu Ganguly</b></p></div></div>
   <script src="app.js"></script>
 </body>
 </html>
