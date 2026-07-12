@@ -1,4 +1,5 @@
-[README.md](https://github.com/user-attachments/files/29937790/README.md)<div align="center">
+
+<div align="center">
 
 <img src="assets/haven-dashboard.svg" alt="Haven dashboard preview" width="100%" />
 
@@ -18,6 +19,10 @@
 </div>
 
 > **Haven** is a calm, one-page personal dashboard that turns life admin into a simple daily ritual. Keep tabs on tasks, bills, documents, warranties and home maintenance—without the clutter.
+
+<div align="center">
+  <b>Created by Suryandu Ganguly</b>
+</div>
 
 ## ✨ Why Haven?
 
@@ -120,5 +125,5 @@ haven-life-admin/
 ---
 
 <div align="center">
-  <sub>Made for calmer days and fewer forgotten things. 🌿</sub>
+  <sub>Created by Suryandu Ganguly · Made for calmer days and fewer forgotten things. 🌿</sub>
 </div>
