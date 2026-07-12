@@ -1,4 +1,3 @@
-
 <div align="center">
 
 <img src="assets/haven-dashboard.svg" alt="Haven dashboard preview" width="100%" />
