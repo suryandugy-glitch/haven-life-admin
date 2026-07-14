@@ -8,60 +8,123 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <!-- Google Identity Services (real Google Sign-In). Works once you set GOOGLE_CLIENT_ID in app.js -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
-<body>
+<body data-theme="light">
+  <!-- ───────────────────────── WELCOME / GOOGLE LOGIN ───────────────────────── -->
   <section class="welcome-screen" id="welcomeScreen" aria-label="Welcome to Haven">
     <div class="welcome-art"><span class="brand-mark">h</span><i></i><i></i><i></i></div>
-    <div class="welcome-card"><p class="eyebrow">WELCOME TO HAVEN</p><h1>Make space for<br><em>what matters.</em></h1><p>Your personal life-admin companion, designed for a calmer day.</p>
-      <form id="welcomeForm"><label>Your first name<input id="welcomeName" required maxlength="24" placeholder="e.g. Suryandu" autocomplete="name" /></label><label>Choose your language<select id="welcomeLanguage"><option value="en">English</option><option value="hi">Hindi / Hindi</option><option value="bn">Bengali / Bangla</option></select></label><button class="add-btn" type="submit">Enter my Haven <span>→</span></button></form>
+    <div class="welcome-card">
+      <p class="eyebrow">WELCOME TO HAVEN</p>
+      <h1>Make space for<br><em>what matters.</em></h1>
+      <p>Your personal life-admin companion, designed for a calmer day. Sign in with Google to sync your space across every device.</p>
+
+      <div class="login-box">
+        <!-- Real Google button renders here when a client ID is configured -->
+        <div id="googleBtn"></div>
+        <button class="google-fallback" id="localLoginBtn">
+          <span class="g-icon">G</span> Continue with Google
+        </button>
+        <p class="login-hint" id="loginHint">We use your Google profile to greet you and, with your permission, fill in your details.</p>
+      </div>
+
       <small>Created by <b>Suryandu Ganguly</b></small>
     </div>
   </section>
+
+  <!-- ───────────────────────── APP SHELL ───────────────────────── -->
   <div class="app-shell">
     <aside class="sidebar">
       <a class="brand" href="#"><span class="brand-mark">h</span><span>haven</span></a>
       <nav>
         <a class="nav-item active" data-page="dashboard" href="#dashboard"><span>⌂</span>Overview</a>
-        <a class="nav-item" data-page="tasks" href="#tasks"><span>✓</span>Tasks <b id="taskBadge">3</b></a>
+        <a class="nav-item" data-page="tasks" href="#tasks"><span>✓</span>Tasks <b id="taskBadge">0</b></a>
         <a class="nav-item" data-page="money" href="#money"><span>◒</span>Money</a>
         <a class="nav-item" data-page="documents" href="#documents"><span>▤</span>Documents</a>
-        <a class="nav-item" data-page="home" href="#home"><span>⌂</span>Home & things</a>
+        <a class="nav-item" data-page="home" href="#home"><span>⌂</span>Home &amp; things</a>
       </nav>
       <div class="sidebar-bottom">
+        <button class="theme-quick" id="themeQuick" title="Toggle dark / light">☾ Dark mode</button>
         <button class="settings-btn" id="settingsBtn">⚙ Settings</button>
-        <div class="profile"><div class="avatar" id="avatarLetter">S</div><div><strong id="profileName">Surya</strong><small>Personal space</small></div><button id="profileBtn">···</button></div>
+        <div class="profile">
+          <div class="avatar" id="avatarLetter">S</div>
+          <div><strong id="profileName">Surya</strong><small id="profileEmail">Personal space</small></div>
+          <button id="profileBtn">···</button>
+        </div>
       </div>
     </aside>
 
     <main>
       <header class="topbar">
         <button class="mobile-menu" aria-label="Open menu">☰</button>
-        <div class="date-block"><span id="todayDate"></span><span class="dot">•</span><span id="greeting">Good morning, Surya</span></div>
-        <div class="top-actions"><button class="icon-btn" id="searchBtn" aria-label="Search">⌕</button><button class="icon-btn" id="notifyBtn" aria-label="Notifications">♧<i></i></button><button class="add-btn" id="addBtn">+ Add</button></div>
+        <div class="date-block"><span id="todayDate"></span><span class="dot">•</span><span id="greeting">Good morning</span></div>
+        <div class="top-actions">
+          <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">☾</button>
+          <button class="icon-btn" id="notifyBtn" aria-label="Notifications">♧<i></i></button>
+          <button class="add-btn" id="addBtn">+ Add</button>
+        </div>
       </header>
 
+      <!-- DASHBOARD -->
       <section class="page active-page" id="dashboard">
-        <div class="hero"><div><p class="eyebrow">YOUR DAY, IN FOCUS</p><h1>Everything is <em>handled.</em></h1><p class="subhead">A calm, clear view of the life stuff that needs your attention.</p></div><div class="score-card"><span>HAVEN SCORE</span><strong id="score">82</strong><small>Looking good <b>↗ 4</b></small></div></div>
-        <div class="focus-strip"><div class="sparkle">✦</div><div><small>HAVEN'S FOCUS FOR TODAY</small><p>Set aside 10 minutes to renew your car insurance — it expires next week.</p></div><button id="focusTaskBtn">Add to tasks <span>→</span></button></div>
+        <div class="hero">
+          <div><p class="eyebrow">YOUR DAY, IN FOCUS</p><h1>Everything is <em>handled.</em></h1><p class="subhead">A calm, clear view of the life stuff that needs your attention.</p></div>
+          <div class="score-card"><span>HAVEN SCORE</span><strong id="score">82</strong><small>Looking good <b>↗ 4</b></small></div>
+        </div>
+        <div class="focus-strip"><div class="sparkle">✦</div><div><small>HAVEN'S FOCUS FOR TODAY</small><p id="focusText">Add your first task to see Haven's focus for today.</p></div><button id="focusTaskBtn">Go to tasks <span>→</span></button></div>
         <div class="dashboard-grid">
-          <section class="card upcoming"><div class="card-heading"><div><p class="eyebrow">COMING UP</p><h2>Your next 7 days</h2></div><button class="text-btn" data-go="tasks">View all →</button></div><div class="timeline" id="timeline"></div></section>
-          <section class="card action-card"><div class="card-heading"><div><p class="eyebrow">ACTION CENTER</p><h2>Needs a nudge</h2></div><span class="count-pill">3</span></div><div id="nudgeList"></div><button class="outlined-btn" data-go="tasks">See all actions</button></section>
-          <section class="card money-card"><div class="card-heading"><div><p class="eyebrow">MONEY PULSE</p><h2>July at a glance</h2></div><button class="text-btn" data-go="money">Details →</button></div><div class="spend-row"><div><strong>₹18,400</strong><span>spent so far</span></div><div><strong>₹9,600</strong><span>coming up</span></div></div><div class="bar"><span></span></div><p class="muted">63% of your monthly essentials budget</p></section>
-          <section class="card documents-card"><div class="card-heading"><div><p class="eyebrow">YOUR VAULT</p><h2>Important things</h2></div><button class="text-btn" data-go="documents">Open vault →</button></div><div class="doc-preview"><div class="doc-icon insurance">⌑</div><div><strong>Car insurance</strong><span>Renews in 8 days</span></div><span class="warning">!</span></div><div class="doc-preview"><div class="doc-icon receipt">▤</div><div><strong>Phone warranty</strong><span>Valid until 14 Sep 2026</span></div><span class="safe">✓</span></div></section>
+          <section class="card upcoming"><div class="card-heading"><div><p class="eyebrow">COMING UP</p><h2>Your upcoming</h2></div><button class="text-btn" data-go="tasks">View all →</button></div><div class="timeline" id="timeline"></div></section>
+          <section class="card action-card"><div class="card-heading"><div><p class="eyebrow">ACTION CENTER</p><h2>Needs a nudge</h2></div><span class="count-pill" id="nudgeCount">0</span></div><div id="nudgeList"></div><button class="outlined-btn" data-go="tasks">See all actions</button></section>
+          <section class="card money-card"><div class="card-heading"><div><p class="eyebrow">MONEY PULSE</p><h2 id="mpTitle">This month at a glance</h2></div><button class="text-btn" data-go="money">Details →</button></div><div class="spend-row"><div><strong id="mpSpent">₹0</strong><span>spent so far</span></div><div><strong id="mpUpcoming">₹0</strong><span>coming up</span></div></div><div class="bar"><span id="mpBar"></span></div><p class="muted" id="mpNote">Set your budget in the Money page.</p></section>
+          <section class="card documents-card"><div class="card-heading"><div><p class="eyebrow">YOUR VAULT</p><h2>Important things</h2></div><button class="text-btn" data-go="documents">Open vault →</button></div><div id="vaultPreview"></div></section>
         </div>
       </section>
 
-      <section class="page" id="tasks"><div class="page-title"><div><p class="eyebrow">ACTION CENTER</p><h1>Tasks & reminders</h1><p>Small things, clearly sorted.</p></div><button class="add-btn" id="newTaskBtn">+ New task</button></div><div class="task-layout"><div class="task-list card"><div class="filters"><button class="filter active">All</button><button class="filter">Today</button><button class="filter">This week</button></div><div id="allTasks"></div></div><aside class="card task-stats"><p class="eyebrow">YOUR RHYTHM</p><strong id="doneCount">4</strong><span>tasks completed this week</span><div class="mini-chart"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><p class="muted">You’re building a good habit.</p></aside></div></section>
+      <!-- TASKS -->
+      <section class="page" id="tasks">
+        <div class="page-title"><div><p class="eyebrow">ACTION CENTER</p><h1>Tasks &amp; reminders</h1><p>Small things, clearly sorted.</p></div><button class="add-btn" id="newTaskBtn">+ New task</button></div>
+        <div class="task-layout">
+          <div class="task-list card"><div class="filters" id="taskFilters"><button class="filter active" data-filter="all">All</button><button class="filter" data-filter="open">To do</button><button class="filter" data-filter="done">Done</button></div><div id="allTasks"></div></div>
+          <aside class="card task-stats"><p class="eyebrow">YOUR RHYTHM</p><strong id="doneCount">0</strong><span>tasks completed</span><div class="mini-chart"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><p class="muted">You're building a good habit.</p></aside>
+        </div>
+      </section>
 
-      <section class="page" id="money"><div class="page-title"><div><p class="eyebrow">MONEY PULSE</p><h1>Calm money, clear mind.</h1><p>A simple view of what is paid and what’s next.</p></div><button class="add-btn" id="newBillBtn">+ Add bill</button></div><div class="money-overview"><article><span>This month</span><strong>₹18,400</strong><small>₹1,200 less than June</small></article><article><span>Auto-pay covered</span><strong>₹7,200</strong><small>3 upcoming payments</small></article><article><span>Subscriptions</span><strong>₹1,199</strong><small>3 active services</small></article></div><section class="card bill-card"><div class="card-heading"><div><p class="eyebrow">UPCOMING PAYMENTS</p><h2>Keep an eye on these</h2></div></div><div id="billsList"></div></section></section>
+      <!-- MONEY -->
+      <section class="page" id="money">
+        <div class="page-title"><div><p class="eyebrow">MONEY PULSE</p><h1>Calm money, clear mind.</h1><p>Your numbers, entered by you.</p></div><div class="title-actions"><button class="outlined-btn inline" id="editMoneyBtn">Edit figures</button><button class="add-btn" id="newBillBtn">+ Add bill</button></div></div>
+        <div class="money-overview" id="moneyOverview"></div>
+        <section class="card bill-card"><div class="card-heading"><div><p class="eyebrow">UPCOMING PAYMENTS</p><h2>Keep an eye on these</h2></div></div><div id="billsList"></div></section>
+      </section>
 
-      <section class="page" id="documents"><div class="page-title"><div><p class="eyebrow">YOUR VAULT</p><h1>Important documents.</h1><p>Keep the details, lose the paper chase.</p></div><button class="add-btn" id="uploadBtn">+ Upload</button></div><div class="vault-filters"><button class="filter active">All</button><button class="filter">Insurance</button><button class="filter">Warranties</button><button class="filter">Home</button></div><div class="document-grid" id="documentGrid"></div></section>
+      <!-- DOCUMENTS -->
+      <section class="page" id="documents">
+        <div class="page-title"><div><p class="eyebrow">YOUR VAULT</p><h1>Important documents.</h1><p>Keep the details, lose the paper chase.</p></div><button class="add-btn" id="uploadBtn">+ Add document</button></div>
+        <div class="vault-filters" id="vaultFilters"></div>
+        <div class="document-grid" id="documentGrid"></div>
+      </section>
 
-      <section class="page" id="home"><div class="page-title"><div><p class="eyebrow">HOME & THINGS</p><h1>Look after what matters.</h1><p>Maintenance, warranties and everything in between.</p></div><button class="add-btn" id="newItemBtn">+ Add item</button></div><div class="home-grid" id="homeGrid"></div></section>
+      <!-- HOME -->
+      <section class="page" id="home">
+        <div class="page-title"><div><p class="eyebrow">HOME &amp; THINGS</p><h1>Look after what matters.</h1><p>Maintenance, warranties and everything in between.</p></div><button class="add-btn" id="newItemBtn">+ Add item</button></div>
+        <div class="home-grid" id="homeGrid"></div>
+      </section>
     </main>
   </div>
-  <div class="modal-backdrop" id="modalBackdrop"><div class="modal"><button class="close-modal">×</button><p class="eyebrow">ADD TO HAVEN</p><h2 id="modalTitle">New task</h2><form id="entryForm"><label>What needs attention?<input id="entryName" required placeholder="e.g. Book a dental check-up" /></label><label>When?<select id="entryDate"><option>Today</option><option>This week</option><option>Next week</option><option>No due date</option></select></label><button class="add-btn" type="submit">Save it</button></form></div></div>
+
+  <!-- ───────────────────────── ADD / EDIT MODAL (fields injected by app.js) ───────────────────────── -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <button class="close-modal">×</button>
+      <p class="eyebrow" id="modalEyebrow">ADD TO HAVEN</p>
+      <h2 id="modalTitle">New task</h2>
+      <form id="entryForm"></form>
+    </div>
+  </div>
+
   <div class="toast" id="toast">Saved to your Haven</div>
+
+  <!-- ───────────────────────── HAVEN AI ───────────────────────── -->
   <button class="ai-fab" id="aiFab" aria-label="Open Haven AI"><span>✦</span> Ask Haven</button>
   <aside class="ai-panel" id="aiPanel" aria-label="Haven AI assistant">
     <div class="ai-head"><div><span>✦</span><strong>Haven AI</strong><small>Your calm planning companion</small></div><button id="closeAi">×</button></div>
@@ -69,7 +132,48 @@
     <div class="ai-suggestions"><button>What needs attention?</button><button>Plan my week</button><button>How can I save money?</button></div>
     <form id="aiForm"><input id="aiInput" placeholder="Ask Haven anything..." autocomplete="off" /><button aria-label="Send">→</button></form>
   </aside>
-  <div class="modal-backdrop settings-backdrop" id="settingsBackdrop"><div class="settings-modal"><button class="close-settings">×</button><div class="settings-title"><p class="eyebrow">MAKE HAVEN YOURS</p><h2>Settings</h2><p>Personalise the space that helps you run your life.</p></div><div class="setting-section"><h3>Your profile</h3><label>Display name<input id="settingName" maxlength="24" /></label></div><div class="setting-section"><h3>Appearance</h3><div class="theme-options"><button data-theme="evergreen"><i></i><span>Evergreen</span></button><button data-theme="ocean"><i></i><span>Ocean</span></button><button data-theme="sunset"><i></i><span>Sunset</span></button><button data-theme="night"><i></i><span>Night</span></button></div></div><div class="setting-section"><h3>Language</h3><select id="settingLanguage"><option value="en">English</option><option value="hi">Hindi / Hindi</option><option value="bn">Bengali / Bangla</option></select></div><div class="setting-section toggle-row"><div><h3>Gentle reminders</h3><p>Show a daily focus and helpful nudges.</p></div><input type="checkbox" id="remindersToggle" checked /></div><button class="add-btn" id="saveSettings">Save changes</button><p class="creator-credit">Created with care by <b>Suryandu Ganguly</b></p></div></div>
+
+  <!-- ───────────────────────── SETTINGS ───────────────────────── -->
+  <div class="modal-backdrop settings-backdrop" id="settingsBackdrop">
+    <div class="settings-modal">
+      <button class="close-settings">×</button>
+      <div class="settings-title"><p class="eyebrow">MAKE HAVEN YOURS</p><h2>Settings</h2><p>Personalise the space that helps you run your life.</p></div>
+
+      <div class="setting-section" id="accountSection">
+        <h3>Your account</h3>
+        <div class="account-row"><div class="avatar" id="settingAvatar">S</div><div class="account-meta"><strong id="settingAccountName">Guest</strong><small id="settingAccountEmail">Not signed in</small></div><button class="outlined-btn inline" id="signOutBtn">Sign out</button></div>
+      </div>
+
+      <div class="setting-section">
+        <h3>Your details <small class="from-google" id="googleTag">from Google</small></h3>
+        <label>Display name<input id="settingName" maxlength="40" /></label>
+        <div class="detail-grid">
+          <label>Date of birth<input id="settingDob" type="date" /></label>
+          <label>Location<input id="settingLocation" placeholder="City, Country" /></label>
+        </div>
+        <label>WhatsApp number (for reminders)<input id="settingPhone" placeholder="e.g. 919812345678" inputmode="tel" /></label>
+      </div>
+
+      <div class="setting-section">
+        <h3>Appearance</h3>
+        <div class="theme-options two">
+          <button data-theme="light"><i></i><span>Light mode</span></button>
+          <button data-theme="dark"><i></i><span>Dark mode</span></button>
+        </div>
+      </div>
+
+      <div class="setting-section">
+        <h3>Language</h3>
+        <select id="settingLanguage"><option value="en">English</option><option value="hi">Hindi / हिन्दी</option><option value="bn">Bengali / বাংলা</option></select>
+      </div>
+
+      <div class="setting-section toggle-row"><div><h3>Gentle reminders</h3><p>Show a daily focus and helpful nudges.</p></div><input type="checkbox" id="remindersToggle" checked /></div>
+
+      <button class="add-btn" id="saveSettings">Save changes</button>
+      <p class="creator-credit">Created with care by <b>Suryandu Ganguly</b></p>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>

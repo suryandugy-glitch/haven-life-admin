@@ -44,12 +44,33 @@ Most to-do apps make life feel like more work. Haven is deliberately different: 
 
 | Area | What it helps with |
 | :--- | :--- |
+| 🔐 **Google Sign-In** | Sign in with Google to greet you by name and, with permission, pull your profile details (name, email, photo, date of birth, location). A built-in local sign-in keeps the app working even before you add a client ID. |
+| ☁️ **Cross-device sync** | Every task, bill, document and setting is stored per Google account, so signing in on another device restores the same space. |
 | 🏡 **Overview** | Daily focus, coming-up timeline, action centre, money pulse and vault alerts. |
-| ✅ **Tasks & reminders** | Add tasks, filter your list and check work off as it gets done. |
-| 💳 **Money pulse** | See monthly essentials, upcoming payments and subscriptions at a glance. |
-| 🗂️ **Document vault** | Keep policy, warranty and household records in one visual place. |
-| 🔧 **Home & things** | Track servicing, maintenance, warranties and important belongings. |
+| ✅ **Tasks & reminders** | **Add and delete** tasks, filter your list, and check work off as it gets done. |
+| 💳 **Money pulse** | **Your own numbers** — enter spending, upcoming and budget figures; add and delete bills. |
+| 🗂️ **Document vault** | **Add and delete** documents with **customisable categories** (All / Insurance / Warranties / Home + your own). |
+| 🔧 **Home & things** | **Add and delete** items — servicing, maintenance, warranties and belongings. |
+| 📅 **Add to Calendar** | Every task and bill has a one-tap **Add to Google Calendar** link. |
+| 💬 **WhatsApp reminders** | Auto-generated **WhatsApp reminder** message for any task or bill, sent to your saved number. |
+| 🌗 **Dark & light mode** | Just two clean themes — both fully readable — with a one-tap toggle. |
 | 📱 **Responsive design** | A thoughtful desktop layout that adapts smoothly for mobile. |
+
+## 🔐 Enable real Google login
+
+Out of the box the app uses a **built-in local sign-in** so it runs anywhere with no setup. To switch on genuine Google Sign-In:
+
+1. Open the [Google Cloud Console → Credentials](https://console.cloud.google.com/apis/credentials).
+2. Create an **OAuth 2.0 Client ID** of type **Web application**.
+3. Under **Authorised JavaScript origins**, add your site URL, e.g. `https://YOUR-USERNAME.github.io`.
+4. Copy the client ID and paste it into `app.js`:
+   ```js
+   const GOOGLE_CLIENT_ID = "YOUR-ID.apps.googleusercontent.com";
+   ```
+5. Commit and reload — the real Google button appears automatically.
+
+> [!NOTE]
+> Google returns name, email and profile photo from the basic sign-in. Date of birth and location are only shared when your Google account exposes them and you grant permission; the app also lets you fill these in manually in **Settings → Your details**, and they're saved to your account.
 
 ## A little tour
 
@@ -100,8 +121,8 @@ https://YOUR-GITHUB-USERNAME.github.io/haven-life-admin/
 ```text
 haven-life-admin/
 ├── index.html              # App layout and content
-├── style.css               # Design system and responsive styles
-├── app.js                  # Interactions and demo data
+├── style.css               # Design system, dark/light themes, responsive styles
+├── app.js                  # Google login, per-account data, add/delete, calendar & WhatsApp
 ├── assets/
 │   └── haven-dashboard.svg # README dashboard artwork
 └── README.md
@@ -109,17 +130,21 @@ haven-life-admin/
 
 ## Built with intention
 
-- **Zero dependencies** — simple HTML, CSS and JavaScript.
-- **No tracking or account required** — open it and start exploring.
-- **Front-end prototype** — demo data resets when the page reloads.
+- **Zero build step** — plain HTML, CSS and JavaScript; the only external script is Google's official Sign-In library.
+- **Your data stays in your browser** — everything is saved in `localStorage`, namespaced per Google account.
+- **Privacy-friendly** — no analytics, no third-party tracking.
 
 ## What could come next?
 
-- [ ] Local storage for persistent tasks and reminders
-- [ ] Login and cloud sync with Supabase or Firebase
-- [ ] Upload real documents and receipt scanning
-- [ ] Calendar integration and notification reminders
-- [ ] Dark mode and personalised themes
+- [x] Persistent tasks and reminders (localStorage)
+- [x] Google login
+- [x] Add & delete across every section
+- [x] Customisable vault categories
+- [x] Add-to-Calendar and WhatsApp reminders
+- [x] Dark & light mode
+- [ ] True cloud sync via Firebase/Supabase (currently per-device, keyed by account)
+- [ ] Upload real document files and receipt scanning
+- [ ] Push notifications for reminders
 
 ---
 
