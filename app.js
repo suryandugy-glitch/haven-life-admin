@@ -167,10 +167,20 @@ function hideWelcome() { $("#welcomeScreen").classList.add("hide"); }
    5. TRANSLATIONS (nav labels + greeting)
    -------------------------------------------------------------------------- */
 const translations = {
-  en: { overview:"Overview", tasks:"Tasks", money:"Money", documents:"Documents", home:"Home & things", settings:"Settings", greet:"Good morning" },
-  hi: { overview:"अवलोकन", tasks:"काम", money:"पैसे", documents:"दस्तावेज़", home:"घर और चीज़ें", settings:"सेटिंग्स", greet:"नमस्ते" },
-  bn: { overview:"পর্যালোচনা", tasks:"কাজ", money:"অর্থ", documents:"নথি", home:"বাড়ি ও জিনিস", settings:"সেটিংস", greet:"নমস্কার" }
+  en: { overview:"Overview", tasks:"Tasks", money:"Money", documents:"Documents", home:"Home & things", settings:"Settings",
+        greet:["Good morning", "Good afternoon", "Good evening"] },
+  hi: { overview:"अवलोकन", tasks:"काम", money:"पैसे", documents:"दस्तावेज़", home:"घर और चीज़ें", settings:"सेटिंग्स",
+        greet:["सुप्रभात", "नमस्ते", "शुभ संध्या"] },
+  bn: { overview:"পর্যালোচনা", tasks:"কাজ", money:"অর্থ", documents:"নথি", home:"বাড়ি ও জিনিস", settings:"সেটিংস",
+        greet:["সুপ্রভাত", "নমস্কার", "শুভ সন্ধ্যা"] }
 };
+
+// Pick the right greeting for the current time of day.
+function greetingNow(lang) {
+  const h = new Date().getHours();
+  const slot = h < 12 ? 0 : h < 17 ? 1 : 2;
+  return translations[lang].greet[slot];
+}
 
 /* --------------------------------------------------------------------------
    6. APPLY PREFERENCES / PROFILE
@@ -184,7 +194,7 @@ function applyPrefs() {
   $("#profileName").textContent = displayName;
   $("#profileEmail").textContent = account.email || "Personal space";
   $("#avatarLetter").textContent = displayName.slice(0, 1).toUpperCase();
-  $("#greeting").textContent = `${t.greet}, ${displayName}`;
+  $("#greeting").textContent = `${greetingNow(prefs.language)}, ${displayName}`;
 
   // Theme toggle labels
   const dark = prefs.theme === "dark";
@@ -264,11 +274,31 @@ function render() {
   $("#nudgeCount").textContent = Math.min(open, 3);
   $("#doneCount").textContent = tasks.filter(t => t.done).length;
 
+  renderScore();
+
   // Dashboard focus
   const firstUrgent = tasks.find(t => !t.done && t.urgent) || tasks.find(t => !t.done);
   $("#focusText").textContent = firstUrgent
     ? `Set aside a few minutes for: ${firstUrgent.name}.`
     : "You're all caught up. Enjoy the calm. ✦";
+}
+
+// The Haven score is now real: it reflects how on-top-of-things you are.
+// Completed tasks raise it, urgent open tasks lower it, staying within budget helps.
+function renderScore() {
+  const done = tasks.filter(t => t.done).length;
+  const openUrgent = tasks.filter(t => !t.done && t.urgent).length;
+  const openOther = tasks.filter(t => !t.done && !t.urgent).length;
+  let score = 72 + done * 4 - openUrgent * 8 - openOther * 2;
+  if (money.budget && money.spent <= money.budget) score += 6;
+  score = Math.max(5, Math.min(100, score));
+
+  $("#score").textContent = score;
+  const scoreCard = $(".score-card small");
+  if (scoreCard) scoreCard.innerHTML =
+    score >= 80 ? "Looking good <b>↗</b>" :
+    score >= 55 ? "Steady <b>→</b>" :
+                  "Needs a nudge <b>↘</b>";
 }
 
 function renderTimeline() {
@@ -568,6 +598,45 @@ $("#saveSettings").onclick = () => {
 };
 
 /* --------------------------------------------------------------------------
+   14b. BACKUP & RESTORE — download / load your whole Haven as a JSON file
+   -------------------------------------------------------------------------- */
+$("#exportBtn").onclick = () => {
+  const backup = { app: "haven", version: 1, exported: new Date().toISOString(),
+                   prefs, tasks, bills, docs, home, categories, money };
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `haven-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast("Backup downloaded. Keep it somewhere safe.");
+};
+
+$("#importBtn").onclick = () => $("#importFile").click();
+$("#importFile").onchange = e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const b = JSON.parse(reader.result);
+      if (b.app !== "haven") throw new Error("not a Haven backup");
+      if (!confirm("Restore this backup? It will replace your current Haven data.")) return;
+      prefs = { ...prefDefaults, ...(b.prefs || {}) };
+      tasks = b.tasks || []; bills = b.bills || []; docs = b.docs || [];
+      home = b.home || []; categories = b.categories || [...seedCategories];
+      money = { ...moneyDefaults, ...(b.money || {}) };
+      save(); applyAll(); closeSettings();
+      toast("Backup restored. Welcome back to your Haven.");
+    } catch {
+      toast("That file doesn't look like a Haven backup.");
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = "";
+};
+
+/* --------------------------------------------------------------------------
    15. HAVEN AI (simple offline helper)
    -------------------------------------------------------------------------- */
 const ai = $("#aiPanel");
@@ -613,6 +682,17 @@ function toast(t) {
 }
 
 function applyAll() { applyPrefs(); render(); }
+
+// Close any open modal / panel with the Escape key.
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  closeModal(); closeSettings(); ai.classList.remove("open");
+});
+
+// First visit ever: follow the device's dark / light preference.
+if (!localStorage.getItem("haven-account") && window.matchMedia?.("(prefers-color-scheme: dark)").matches) {
+  prefDefaults.theme = "dark";
+}
 
 // Login buttons
 $("#localLoginBtn").onclick = localLogin;

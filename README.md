@@ -23,6 +23,21 @@
   <b>Created by Suryandu Ganguly</b>
 </div>
 
+## 🆕 What's new — v1.1.0 (July 2026)
+
+This release focuses on making Haven feel more alive and keeping your data safer:
+
+| Change | Details |
+| :--- | :--- |
+| 💾 **Backup & restore** | New **Settings → Your data** section. Download your entire Haven (tasks, bills, documents, settings) as a JSON file and restore it on any device — real data portability, no cloud needed. |
+| 📈 **A real Haven score** | The dashboard score is no longer a fixed number — it's now computed from your life: completed tasks raise it, urgent open tasks lower it, and staying within budget gives it a boost. |
+| 🌅 **Time-aware greeting** | Haven now says *Good morning / afternoon / evening* based on your clock, in all three languages (English, Hindi, Bengali). |
+| 🌙 **Follows your system theme** | On your very first visit, Haven matches your device's dark/light preference automatically. |
+| ⌨️ **Escape to close** | Any open modal, settings panel or the AI panel now closes with the `Esc` key. |
+| ♿ **Keyboard focus rings** | Clear, theme-aware focus outlines for keyboard navigation — without cluttering mouse use. |
+| ✨ **Smooth theme switching** | Cards, panels and surfaces now fade gently between light and dark instead of snapping. |
+| 🔍 **Better sharing & SEO** | Added meta description, Open Graph tags, a browser `theme-color`, and a proper favicon (the little "h" now shows in your browser tab). |
+
 ## ✨ Why Haven?
 
 Most to-do apps make life feel like more work. Haven is deliberately different: warm, quiet, and focused on the small practical details that keep your life running smoothly.
@@ -142,6 +157,8 @@ haven-life-admin/
 - [x] Customisable vault categories
 - [x] Add-to-Calendar and WhatsApp reminders
 - [x] Dark & light mode
+- [x] Backup & restore (JSON export/import)
+- [x] Live Haven score computed from your real data
 - [ ] True cloud sync via Firebase/Supabase (currently per-device, keyed by account)
 - [ ] Upload real document files and receipt scanning
 - [ ] Push notifications for reminders
