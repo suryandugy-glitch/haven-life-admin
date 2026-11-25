@@ -17,6 +17,8 @@
 
 </div>
 
+> **Storage note:** Haven has no remote account database. Signing in with Google does **not** synchronize localStorage across devices. Back up your data before clearing browser storage or changing devices.
+
 > **Haven** is a calm, one-page personal dashboard that turns life admin into a simple daily ritual. Keep tabs on tasks, bills, documents, warranties and home maintenance—without the clutter.
 
 <div align="center">
@@ -60,7 +62,7 @@ Most to-do apps make life feel like more work. Haven is deliberately different: 
 | Area | What it helps with |
 | :--- | :--- |
 | 🔐 **Google Sign-In** | Sign in with Google to greet you by name and, with permission, pull your profile details (name, email, photo, date of birth, location). A built-in local sign-in keeps the app working even before you add a client ID. |
-| ☁️ **Cross-device sync** | Every task, bill, document and setting is stored per Google account, so signing in on another device restores the same space. |
+| 💾 **Local data and portability** | Data is saved in this browser and separated by account identifier. Use **Settings → Your data** to export a backup and import it on another device. There is no automatic cloud sync. |
 | 🏡 **Overview** | Daily focus, coming-up timeline, action centre, money pulse and vault alerts. |
 | ✅ **Tasks & reminders** | **Add and delete** tasks, filter your list, and check work off as it gets done. |
 | 💳 **Money pulse** | **Your own numbers** — enter spending, upcoming and budget figures; add and delete bills. |
