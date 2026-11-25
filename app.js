@@ -5,8 +5,8 @@
    Features:
    - Google Sign-In (real, via Google Identity Services) with a built-in
      fallback so the app works out of the box on GitHub Pages with no setup.
-   - Per-account data: everything is keyed by the signed-in Google account, so
-     logging in from another device restores the same tasks, docs, bills, etc.
+   - Per-browser, per-account data: records are namespaced by account identifier
+     in localStorage. Cross-device transfer requires manual backup and restore.
    - Add + delete on every list (tasks, bills, documents, home items) and
      customisable vault categories.
    - Dark / light mode only, both fully readable.
@@ -68,7 +68,7 @@ const seedCategories = ["Insurance", "Warranties", "Home"];
 let prefs, tasks, bills, docs, home, categories, money, activeVault = "All", activeTaskFilter = "all";
 
 /* --------------------------------------------------------------------------
-   3. STORAGE  (namespaced by account id → cross-device restore on re-login)
+   3. STORAGE  (namespaced by account id in this browser only)
    -------------------------------------------------------------------------- */
 const key = name => `haven:${account.sub}:${name}`;
 const read = (name, fallback) => JSON.parse(localStorage.getItem(key(name)) || "null") ?? fallback;
